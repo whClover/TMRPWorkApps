@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %></title>
+
+    <%--<asp:PlaceHolder runat="server">
+        <%: Styles.Render("~/Css") %>
+    </asp:PlaceHolder>--%>
+
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet" runat="server" />
+    <link href="~/assets/css/icons.min.css" rel="stylesheet" runat="server" />
+    <link href="~/assets/css/app.min.css" rel="stylesheet" runat="server" />
+    <link href="~/assets/costume/css/mycss.css" rel="stylesheet" runat="server" />
+    <link href="~/assets/libs/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" runat="server" />
+    <link href="~/assets/libs/flatpickr/flatpickr.min.css" rel="stylesheet" runat="server" />
+    <link href="~/assets/costume/alertify/css/alertify.min.css" rel="stylesheet" runat="server" />
+    <link href="~/assets/costume/toast/toastr.min.css" rel="stylesheet" runat="server" />
+    <link href="~/assets/costume/summernote/summernote-bs4.min.css" rel="stylesheet" runat="server" />
+    <link href="~/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" runat="server" />
+    <script src="/assets/costume/colorbox/jquery.colorbox-min.js"></script>
+
+    <!-- quill css -->
+    <link href="~/assets/libs/quill/quill.core.css" rel="stylesheet" type="text/css" runat="server" />
+    <link href="~/assets/libs/quill/quill.bubble.css" rel="stylesheet" type="text/css" runat="server" />
+    <link href="~/assets/libs/quill/quill.snow.css" rel="stylesheet" type="text/css" runat="server" />
+
+
+    <asp:PlaceHolder runat="server">
+        <%= Scripts.Render("~/buatmodal") %>
+    </asp:PlaceHolder>
+
+    <asp:PlaceHolder runat="server">
+        <%= Scripts.Render("~/summernote") %>
+    </asp:PlaceHolder>
+    
+
+    <script type="text/javascript">
+        function updateProgBar(id, widthPercentage) {
+            const progressBar = document.getElementById(id);
+            if (progressBar) {
+                progressBar.style.width = `${widthPercentage}%`;
+                progressBar.textContent = `${widthPercentage}%`;
+                progressBar.setAttribute('aria-valuenow', widthPercentage);
+                console.log('success');
+            } else {
+                console.error(`Progress bar element with ID "${id}" not found!`);
+            }
+        }
+    </script>
+
+    <style>
+        html, body {
+          scroll-behavior: auto;
+          scroll-snap-type: none;
+        }
+    </style>
+
+    <%--<script type="text/javascript">
+        // Check session status every 5 seconds
+        setInterval(function () {
+            $.ajax({
+                type: "POST",
+                url: window.location.pathname + "/CheckSessionStatus",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: "{}",
+                success: function (response) {
+                    if (response.d === "session_expired") {
+                        // Session has expired, redirect to lock screen or login page
+                        window.location.href = "Lock.aspx";
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error checking session status: " + error);
+                }
+            });
+        }, 5000); // Check every 5 seconds
+    </script>--%>
+
+
+    <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+
+    <style>
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* Warna latar belakang transparan lebih gelap */
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+          }
+    </style>
+
+</head>
+<body data-layout="horizontal" data-topbar="dark">
+    <div id="overlay">
+        <div id="loader">
+            <h1 class="display-6 text-center">Loading Data</h1><br />
+            <div>
+                <div class="spinner-grow text-light m-1" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-light m-1" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-light m-1" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-light m-1" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-light m-1" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow text-light m-1" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form runat="server">
+        <div id="layout-wrapper">
+            <header id="page-topbar">
+                <div class="navbar-header" style="max-width:100%">
+                    <div class="d-flex">
+                        <!-- LOGO -->
+                        <div class="navbar-brand-box">
+                            <a class="logo logo-light" style="z-index:-1">
+                                <span class="logo-lg">
+                                    <img src="~/assets/images/logo/thiess_white.png" runat="server" class="img-responsive" height="200">
+                                    <img src="~/assets/images/logo/tcrc_white.png" runat="server" class="img-responsive" height="45">
+                                </span>
+                            </a>
+                        </div>
+
+                        <button type="button" class="btn btn-sm px-3 font-size-16 d-lg-none header-item" data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn header-item user text-start d-flex align-items-center" id="page-header-user-dropdown"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img class="rounded-circle header-profile-user img-fluid" runat="server" src="~/assets/images/users/avatar-2.jpg" alt="Header Avatar">
+                                <span class="ms-2 d-none d-sm-block user-item-desc">
+                                    <span class="user-name" id="sFullName" runat="server">~</span>
+                                    <span class="user-sub-title" id="sEmail" runat="server">~</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Menu Bar -->
+                <asp:ContentPlaceHolder ID="MenuContent" runat="server"></asp:ContentPlaceHolder>
+                <!-- End Menu Bar -->
+            </header>
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+                <div class="page-content">
+                    <!-- Dynamic Content -->
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
+                    <!-- End Dynamic Content -->
+                </div>
+                <!-- End Page-content -->
+                
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <script>document.write(new Date().getFullYear())</script> &copy; Thiess Component Rebuilt Center - Balikpapan.
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="text-sm-end d-none d-sm-block">
+                                    Crafted with <i class="mdi mdi-heart text-danger"></i> by Plant System & Data Analyst
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <!-- end main content-->
+        </div>
+        <!-- END layout-wrapper -->
+    </form>
+
+    <%--<asp:PlaceHolder runat="server">
+        <%= Scripts.Render("~/Scripts") %>
+    </asp:PlaceHolder>--%>
+    <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/libs/metismenujs/metismenujs.min.js"></script>
+    <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="/assets/libs/feather-icons/feather.min.js"></script>
+    <script src="/assets/libs/flatpickr/flatpickr.min.js"></script>
+    <script src="/assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="/assets/js/pages/form-advanced.init.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <!-- ckeditor -->
+    <script src="/assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+    <script src="/assets/libs/quill/quill.min.js"></script>
+
+    <script>
+        flatpickr(".datepicker-basic", {
+            dateFormat: "d-m-Y",
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            var e = document.querySelectorAll(".select2");
+            for (i = 0; i < e.length; ++i) {
+                var a = e[i];
+                new Choices(a, {
+                    removeItemButton: false,
+                    removeItems: false,
+                    placeholder: false,
+                    placeholderValue: null,
+                    searchPlaceholderValue: null,
+                    itemSelectText: ''
+                })
+            }
+
+            var eM = document.querySelectorAll(".select2M");
+            for (i = 0; i < eM.length; ++i) {
+                var a = eM[i];
+                new Choices(a, {
+                    removeItemButton: true,
+                    removeItems: true,
+                    placeholder: false,
+                    placeholderValue: null,
+                    searchPlaceholderValue: null,
+                    itemSelectText: ''
+                })
+            }
+        });
+
+    </script>
+
+    <script>
+        ClassicEditor.create(
+            document.querySelector(".ckeditku")).then(function (e) {
+                e.ui.view.editable.element.style.height = "200px"
+            }).catch(function (e) { console.error(e) });
+        var quill = new Quill(".sneditku", {
+            theme: "snow", modules: {
+                toolbar: [
+                    ["bold", "italic", "underline", "strike"],
+                    [{ color: [] }, { background: [] }],
+                    [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
+                    ["direction", { align: [] }]
+                ]
+            }
+        }), quill = new Quill("#bubble-editor", { theme: "bubble" });
+    </script>
+
+</body>
+</html>
